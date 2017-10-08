@@ -1,15 +1,12 @@
-const   express = require('express'),
-        path = require('path');
+const path = require('path');
+const express = require('express');
 
-const app = express();
+const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
+var app = express();
 
-app.use(express.static(path.join(__dirname, '../Public')));
+app.use(express.static(publicPath));
 
-app.get('/', (req, res) => {
-    res.render('./public/index.html')
-})
-
-app.listen(port,'localhost', ()=>{
-    console.log(`Chat Server running on port ${port}`)
+app.listen(port, () => {
+    console.log(`Server is up on ${port}`);
 });
