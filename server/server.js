@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString } = require('./utils/validation');
 const { Users } = require('./utils/users');
+const { createRoom, getRoom, closeRoom, getRooms } = require('./utils/rooms');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -19,12 +20,22 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
 
+    socket.emit('getRooms', getRooms());
+
     socket.on('join', (params, callback) => {
+
+        if(getRoom(params.room) != -1){
+            createRoom(params.room);
+        }else{
+            return callback('Room exist already.');
+        }
+        
         if (!isRealString(params.name) || !isRealString(params.room)) {
             return callback('Name and room name are required.');
         }
 
-        socket.join(params.room);
+        socket.join(params.room);     
+
         users.removeUser(socket.id);
         users.addUser(socket.id, params.name, params.room);
 

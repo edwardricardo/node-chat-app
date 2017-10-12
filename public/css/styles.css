@@ -193,3 +193,17 @@ button:disabled {
     margin-right: 0px;
   }
 }
+
+.room-option {
+  display: none;
+  color: #808080;
+}
+
+#new-room-input{
+  display: none;
+}
+
+#new-room-btn{
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
