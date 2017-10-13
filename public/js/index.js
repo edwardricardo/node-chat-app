@@ -16,22 +16,16 @@ $('#new-room-btn').on('click', function(e){
     e.preventDefault();
 
     $('#new-room-input')
-    .slideToggle('fast')
-    
-    .focus()
-    
-    .val('')
-    
-    .on('blur', function(){
-        
+    .slideToggle('fast')    
+    .focus()    
+    .val('')    
+    .on('blur', function(){        
         const tmp = $(this).val();
-
         if ($('#room-select').val()){
             $(this).val($('#room-select').val())
         }else{
             $(this).val(tmp)
         }
-        
     })
 });
 
