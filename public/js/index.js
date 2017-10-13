@@ -14,11 +14,24 @@ socket.on('connect', function () {
 
 $('#new-room-btn').on('click', function(e){
     e.preventDefault();
+
     $('#new-room-input')
     .slideToggle('fast')
-    .focus().val('')
+    
+    .focus()
+    
+    .val('')
+    
     .on('blur', function(){
-        $(this).val($('#room-select').val());
+        
+        const tmp = $(this).val();
+
+        if ($('#room-select').val()){
+            $(this).val($('#room-select').val())
+        }else{
+            $(this).val(tmp)
+        }
+        
     })
 });
 
