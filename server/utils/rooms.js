@@ -1,29 +1,18 @@
-const rooms = [];
+const rooms = new Set();
 
 //createRoom
-const createRoom = (room) =>{    
-    const exist = rooms.indexOf(room);
-
-    if (exist === -1){
-        return false;
-    }
-    
-    rooms.push(room);
-}
-
-//getRoom
-const getRoom = (room) => {
-    return rooms.indexOf(room);
+const createRoom = (room) =>{
+    rooms.add(room);
 }
 
 //closeRoom
 const closeRoom = (room) =>{
-
+    rooms.delete(room);
 }
 
 //GetRooms
 const getRooms = () => {
-    return rooms;
+    return Array.from(rooms);
 }
 
-module.exports = {createRoom, getRoom, closeRoom, getRooms}
+module.exports = { createRoom, closeRoom, getRooms }

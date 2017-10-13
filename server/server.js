@@ -6,7 +6,7 @@ const socketIO = require('socket.io');
 const { generateMessage, generateLocationMessage } = require('./utils/message');
 const { isRealString } = require('./utils/validation');
 const { Users } = require('./utils/users');
-const { createRoom, getRoom, closeRoom, getRooms } = require('./utils/rooms');
+const { createRoom, closeRoom, getRooms } = require('./utils/rooms');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -23,16 +23,17 @@ io.on('connection', (socket) => {
     socket.emit('getRooms', getRooms());
 
     socket.on('join', (params, callback) => {
-
-        if(getRoom(params.room) != -1){
-            createRoom(params.room);
-        }else{
-            return callback('Room exist already.');
-        }
         
         if (!isRealString(params.name) || !isRealString(params.room)) {
             return callback('Name and room name are required.');
         }
+
+        const inRoom = users.getUserList(params.room).toString().toLowerCase().split(',');
+        if(inRoom.indexOf(params.name.toLowerCase()) >= 0){
+            return callback('Name already taken.');
+        }
+
+        createRoom(params.room);
 
         socket.join(params.room);     
 
@@ -66,6 +67,9 @@ io.on('connection', (socket) => {
         const user = users.removeUser(socket.id);
 
         if (user) {
+            const inRoom = users.getUserList(user.room);
+            if(inRoom.length === 0){ closeRoom(user.room); }
+            
             io.to(user.room).emit('updateUserList', users.getUserList(user.room));
             io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
         }
