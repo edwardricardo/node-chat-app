@@ -22,6 +22,11 @@ io.on('connection', (socket) => {
 
     socket.emit('getRooms', getRooms());
 
+    socket.on('getTitle', (title) => {
+        socket.emit('createTitle', title);
+    })
+    
+
     socket.on('join', (params, callback) => {
         
         if (!isRealString(params.name) || !isRealString(params.room)) {
@@ -29,7 +34,7 @@ io.on('connection', (socket) => {
         }
 
         const inRoom = users.getUserList(params.room).toString().toLowerCase().split(',');
-        if(inRoom.indexOf(params.name.toLowerCase()) >= 0){
+        if (inRoom.indexOf(params.name.toLowerCase()) >= 0){
             return callback('Name already taken.');
         }
 

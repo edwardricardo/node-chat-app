@@ -16,8 +16,21 @@ function scrollToBottom() {
     }
 }
 
+socket.emit('getTitle', $.deparam(window.location.search).room);
+
+socket.on('createTitle', function (title) {
+    const h4 = $('<h4></h4>');
+    const h3 = $('<h3></h3>');
+
+    h4.append('Room:');
+    h3.append(title.charAt(0).toUpperCase() + title.slice(1).toLowerCase());
+
+    $('#room-title').append(h4).append(h3);
+})
+
 socket.on('connect', function () {
     const params = $.deparam(window.location.search);
+    params.room = params.room.toLowerCase();
 
     socket.emit('join', params, function (err) {
         if (err) {
@@ -26,6 +39,7 @@ socket.on('connect', function () {
         } else {
             console.log('No error');
         }
+
     });
 });
 
@@ -45,7 +59,7 @@ socket.on('updateUserList', function (users) {
 
 socket.on('newMessage', function (message) {
     const formattedTime = moment(message.createdAt).format('h:mm a');
-    const template = jQuery('#message-template').html();
+    const template = $('#message-template').html();
     const html = Mustache.render(template, {
         text: message.text,
         from: message.from,
@@ -58,7 +72,7 @@ socket.on('newMessage', function (message) {
 
 socket.on('newLocationMessage', function (message) {
     const formattedTime = moment(message.createdAt).format('h:mm a');
-    const template = jQuery('#location-message-template').html();
+    const template = $('#location-message-template').html();
     const html = Mustache.render(template, {
         from: message.from,
         url: message.url,
